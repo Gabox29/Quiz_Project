@@ -1,0 +1,38 @@
+* {
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.page {
+  flex-grow: 1;
+}
+
+#home-page, #question-page, #results-page {
+  display: flex;
+}
+
+.container-card {
+  flex-grow: 1;
+}
+
+.card {
+  width: 250px;
+  height: 250px;
+}
+
+.hide{
+  display: none !important;
+}
+
+.bottom-shadow {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Bottom shadow */
+}
