@@ -9,7 +9,6 @@ const API_URL = "https://opentdb.com/api.php?amount=10&category=15&difficulty=ea
 
 localStorage.getItem("Quizzes") || localStorage.setItem("Quizzes", JSON.stringify({ data: [] }));
 quizzes = JSON.parse(localStorage.getItem("Quizzes"));
-console.log(quizzes);
 
 let current_question_index = 0;
 
@@ -24,7 +23,6 @@ let quizEntryTemplate = {
   date: "",
   numAnswersRight: 0,
 };
-console.log(quizEntryTemplate);
 
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -90,9 +88,11 @@ const startingQuiz = (e) => {
 const nextQuesionLogic = (e) => {
   e.preventDefault();
   const selectedOption = document.querySelector('input[name="optionsRadios"]:checked');
+  const feedback = document.getElementById("feedback");
+  feedback.innerHTML = "";
+
 
   if (!selectedOption) {
-    const feedback = document.getElementById("feedback");
     feedback.innerHTML = "Please choose an answer";
     return;
   }
@@ -101,7 +101,6 @@ const nextQuesionLogic = (e) => {
 
   if (selectedOption.value === correct_answer) {
     quizEntryTemplate.numAnswersRight++;
-    console.log(quizEntryTemplate); // remove later
   }
 
   current_question_index++;

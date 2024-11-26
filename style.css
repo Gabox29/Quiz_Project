@@ -24,10 +24,10 @@ body {
   flex-grow: 1;
 }
 
-.card {
+/* .card {
   width: 250px;
   height: 250px;
-}
+} */
 
 .hide{
   display: none !important;
