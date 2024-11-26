@@ -1,12 +1,15 @@
 const homePage = document.getElementById("home-page");
 const questionPage = document.getElementById("question-page");
 const resultsPage = document.getElementById("results-page");
-
 const startQuizBtn = document.getElementById("btn-start-quiz");
 const nextQuestionBtn = document.getElementById("btn-next-question");
-// const resetQuizBtn = document.getElementById("btn-reset-quiz") // results page
+const tryAgainQuizBtn = document.getElementById("btn-try-again"); // results page
 
 const API_URL = "https://opentdb.com/api.php?amount=10&category=15&difficulty=easy&type=multiple";
+
+localStorage.getItem("Quizzes") || localStorage.setItem("Quizzes", JSON.stringify({ data: [] }));
+quizzes = JSON.parse(localStorage.getItem("Quizzes"));
+console.log(quizzes);
 
 let current_question_index = 0;
 
@@ -14,9 +17,14 @@ let questions;
 const getquestions = async () => {
   const res = await axios.get(API_URL);
   questions = res.data.results;
-  console.log(questions[4]); // remove this line after
 };
 getquestions();
+
+let quizEntryTemplate = {
+  date: "",
+  numAnswersRight: 0,
+};
+console.log(quizEntryTemplate);
 
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -71,10 +79,6 @@ const loadQuestion = (questionNum) => {
     input.setAttribute("value", answer);
     label.innerHTML = answer;
   });
-
-  if (!current_question_index) {
-    // results page with reset function
-  }
 };
 
 const startingQuiz = (e) => {
@@ -90,10 +94,44 @@ const nextQuesionLogic = (e) => {
   if (!selectedOption) {
     const feedback = document.getElementById("feedback");
     feedback.innerHTML = "Please choose an answer";
+    return;
   }
+
+  const correct_answer = questions[current_question_index].correct_answer;
+
+  if (selectedOption.value === correct_answer) {
+    quizEntryTemplate.numAnswersRight++;
+    console.log(quizEntryTemplate); // remove later
+  }
+
+  current_question_index++;
+
+  if (current_question_index > 9) {
+    quizEntryTemplate.date = new Date().toISOString().split("T")[0];
+    quizzes.data.push(quizEntryTemplate);
+    localStorage.setItem("Quizzes", JSON.stringify(quizzes));
+
+    const resultsDiv = document.getElementById("results-container");
+    resultsDiv.innerHTML = `<p> You got right ${quizEntryTemplate.numAnswersRight} out of ${questions.length} </p>`;
+
+    goToPage(resultsPage);
+    return;
+  }
+  loadQuestion(current_question_index);
+};
+
+const tryAgainLogic = (e) => {
+  e.preventDefault();
+  quizEntryTemplate.date = "";
+  quizEntryTemplate.numAnswersRight = 0;
+  current_question_index = 0;
+
+  goToPage(questionPage);
+  loadQuestion(current_question_index);
 };
 
 startQuizBtn.addEventListener("click", startingQuiz);
-nextQuestionBtn.addEventListener("click", nextQuesionLogic)
+nextQuestionBtn.addEventListener("click", nextQuesionLogic);
+tryAgainQuizBtn.addEventListener("click", tryAgainLogic);
 
 goToPage(homePage);
